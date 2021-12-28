@@ -5,30 +5,32 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        Map<String, Penduduk> pendudukMap = Main.getDataPenduduk();
+        List<Penduduk> pendudukList = Main.getDataPenduduk();
 
         Scanner input = new Scanner(System.in);
         while (true) {
-            System.out.println("Pilih aksi 'cari' / 'tambah' / 'hapus': ");
+            System.out.println("Pilih aksi: \n1. cari \n2. tambah \n3. hapus \nPilih:");
             String aksi = input.next();
             switch (aksi) {
-                case "cari":
+                case "1":
                     System.out.println("Cari penduduk dengan NIK atau nama: ");
                     String kataKunci = input.next();
-                    Penduduk hasil = Main.cariPenduduk(pendudukMap, kataKunci);
+                    Penduduk hasil = Main.cariPenduduk(pendudukList, kataKunci);
                     if (hasil == null) {
+                        System.out.println("\n==============================");
                         System.out.println("Data penduduk tidak ditemukan!");
+                        System.out.println("==============================\n");
                     } else {
-                        System.out.println("==============================");
+                        System.out.println("\n==============================");
                         System.out.println("NIK : " + hasil.getNik());
                         System.out.println("Nama : " + hasil.getNama());
                         System.out.println("Tempat Lahir : " + hasil.getTempatLahir());
                         System.out.println("Tanggal Lahir : " + hasil.getTanggalLahir());
                         System.out.println("Status : " + hasil.getStatus());
-                        System.out.println("==============================");
+                        System.out.println("==============================\n");
                     }
                     break;
-                case "tambah":
+                case "2":
                     System.out.println("Input NIK: ");
                     String nik = input.next();
 
@@ -44,37 +46,42 @@ public class Main {
                     System.out.println("Input Status: ");
                     String status = input.next();
 
-                    pendudukMap = Main.tambahPenduduk(pendudukMap, nik, nama, tempatLahir, tanggalLahir, status);
+                    pendudukList = Main.tambahPenduduk(pendudukList, nik, nama, tempatLahir, tanggalLahir, status);
+                    System.out.println("\n==============================");
                     System.out.println("Penduduk dengan NIK " + nik + " berhasil ditambahkan");
+                    System.out.println("==============================\n");
                     break;
-                case "hapus":
+                case "3":
                     System.out.println("Input NIK penduduk untuk dihapus: ");
                     String nikHapus = input.next();
 
-                    pendudukMap = Main.hapusPenduduk(pendudukMap, nikHapus);
+                    pendudukList = Main.hapusPenduduk(pendudukList, nikHapus);
+                    System.out.println("\n==============================");
                     System.out.println("Penduduk dengan NIK " + nikHapus + " berhasil dihapus");
+                    System.out.println("==============================\n");
                     break;
                 default:
+                    System.out.println("\n==============================");
                     System.out.println("Input aksi salah! Harap ulangi");
+                    System.out.println("==============================\n");
                     break;
             }
         }
     }
 
-    public static Map<String, Penduduk> getDataPenduduk() {
-        Map<String, Penduduk> pendudukMap = new HashMap<>();
+    public static List<Penduduk> getDataPenduduk() {
+        List<Penduduk> pendudukList = new ArrayList<>();
 
-        pendudukMap.put("1234", new Penduduk("1234", "Rani Jubaedah", "Bandung", "1999-01-01", "kawin"));
-        pendudukMap.put("2345", new Penduduk("2345", "Siti Cicingwae", "Semarang", "1999-02-02", "belum kawin"));
+        pendudukList.add(new Penduduk("1234", "Rani Jubaedah", "Bandung", "1999-01-01", "kawin"));
+        pendudukList.add(new Penduduk("2345", "Siti Cicingwae", "Semarang", "1999-02-02", "belum kawin"));
         // tambah lebih banyak data penduduk disini
 
-        return pendudukMap;
+        return pendudukList;
     }
 
-    public static Penduduk cariPenduduk(Map<String, Penduduk> pendudukMap, String kataKunci) {
+    public static Penduduk cariPenduduk(List<Penduduk> pendudukList, String kataKunci) {
         Penduduk hasil = null;
-        for (Map.Entry<String, Penduduk> entry: pendudukMap.entrySet()) {
-            Penduduk penduduk = entry.getValue();
+        for (Penduduk penduduk: pendudukList) {
             if (penduduk.getNama().toLowerCase().contains(kataKunci.toLowerCase()) || penduduk.getNik().equals(kataKunci)) {
                 hasil = penduduk;
                 break;
@@ -83,13 +90,23 @@ public class Main {
         return hasil;
     }
 
-    public static Map<String, Penduduk> tambahPenduduk(Map<String, Penduduk> pendudukMap, String nik, String nama, String tempatLahir, String tanggalLahir, String status) {
-        pendudukMap.put(nik, new Penduduk(nik, nama, tempatLahir, tanggalLahir, status));
-        return pendudukMap;
+    public static List<Penduduk> tambahPenduduk(List<Penduduk> pendudukList, String nik, String nama, String tempatLahir, String tanggalLahir, String status) {
+        pendudukList.add(new Penduduk(nik, nama, tempatLahir, tanggalLahir, status));
+        return pendudukList;
     }
 
-    public static Map<String, Penduduk> hapusPenduduk(Map<String, Penduduk> pendudukMap, String nik) {
-        pendudukMap.remove(nik);
-        return pendudukMap;
+    public static List<Penduduk> hapusPenduduk(List<Penduduk> pendudukList, String nik) {
+        int index = -1;
+        for (int i = 0; i < pendudukList.size(); i++) {
+            Penduduk penduduk = pendudukList.get(i);
+            if (penduduk.getNik().equals(nik)) {
+                index = i;
+                break;
+            }
+        }
+        if (index >= 0) {
+            pendudukList.remove(index);
+        }
+        return pendudukList;
     }
 }
